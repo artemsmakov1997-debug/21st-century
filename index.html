@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="theme-color" content="#0A71B9" />
+  <title>Такси XXI — Маршрут здоровья</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="game-card">
+      <header class="topbar">
+        <div class="brand">
+          <img src="assets/logo.png" alt="Медицинский центр XXI век" class="brand-logo" />
+          <div>
+            <div class="brand-title">Такси XXI</div>
+            <div class="brand-subtitle">Маршрут здоровья</div>
+          </div>
+        </div>
+        <button id="soundBtn" class="icon-btn" aria-label="Звук">🔊</button>
+      </header>
+
+      <div class="hud">
+        <div class="hud-pill"><span>Счёт</span><strong id="score">0</strong></div>
+        <div class="hud-pill"><span>Жизни</span><strong id="lives">❤❤❤</strong></div>
+        <div class="hud-pill"><span>Жетоны</span><strong id="tokens">0</strong></div>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="game" width="900" height="1500" aria-label="Игра Такси XXI"></canvas>
+        <div id="overlay" class="overlay show">
+          <div class="overlay-card">
+            <img src="assets/logo.png" alt="" class="overlay-logo" />
+            <h1>Такси XXI</h1>
+            <p>Собирайте бонусы, избегайте препятствий и проходите ежедневный маршрут.</p>
+            <button id="startBtn" class="primary-btn">В путь</button>
+            <div class="controls-note">← → / A D или свайпы</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mission">
+        <div>
+          <div class="mission-label">Ежедневная миссия</div>
+          <div class="mission-title">Соберите 10 жетонов XXI</div>
+        </div>
+        <div class="mission-progress"><span id="missionProgress">0/10</span></div>
+      </div>
+    </section>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
