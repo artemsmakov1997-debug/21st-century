@@ -42,13 +42,13 @@
   logo.src = 'assets/logo.png';
 
   const taxiSprite = new Image();
-  taxiSprite.src = 'assets/taxi-top.svg';
+  taxiSprite.src = 'assets/taxi-top-render.webp';
 
   const car = {
     x: laneXs[1],
     y: H * 0.78,
-    w: 132,
-    h: 252,
+    w: 168,
+    h: 320,
     invincible: 0
   };
 
@@ -586,14 +586,6 @@
     }
 
     ctx.shadowColor = 'transparent';
-
-    // real clinic logo on the hood
-    if (logo.complete && logo.naturalWidth) {
-      ctx.save();
-      ctx.globalAlpha = 0.95;
-      ctx.drawImage(logo, -25, -18, 50, 46);
-      ctx.restore();
-    }
 
     ctx.restore();
   }
