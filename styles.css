@@ -22,7 +22,7 @@ body{display:flex;justify-content:center;padding:14px}
 .hud-pill{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:16px;padding:11px 12px;min-height:66px;display:flex;flex-direction:column;justify-content:center}
 .hud-pill span{font-size:12px;color:var(--muted)}
 .hud-pill strong{font-size:18px;line-height:1.25;color:var(--blue-dark)}
-.stage{position:relative;width:100%;aspect-ratio:9/16;background-image:linear-gradient(to bottom,rgba(255,255,255,.06),rgba(255,255,255,0) 28%,rgba(0,0,0,.06) 100%),url('assets/bg-scene.webp');background-size:cover;background-position:center;overflow:hidden}
+.stage{position:relative;width:100%;aspect-ratio:9/16;background:linear-gradient(180deg,#7DAFD5 0%,#EAB08A 15%,#D9E6ED 27%,#25313C 100%);overflow:hidden}
 .stage::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(255,202,114,.06),transparent 45%);pointer-events:none;z-index:1}
 #gameCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2;touch-action:none}
 .overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:22px;z-index:3;background:linear-gradient(180deg,rgba(8,38,59,.24),rgba(8,38,59,.48));backdrop-filter:blur(3px)}
