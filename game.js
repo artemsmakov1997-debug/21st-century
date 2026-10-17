@@ -247,65 +247,173 @@
   }
 
   function drawBackdrop() {
-    const sky = ctx.createLinearGradient(0, 0, 0, H * 0.36);
-    sky.addColorStop(0, '#D8F2FF');
-    sky.addColorStop(1, '#F8FCFF');
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, W, H);
+  const sky = ctx.createLinearGradient(0, 0, 0, H * 0.42);
+  sky.addColorStop(0, '#DDF4FF');
+  sky.addColorStop(0.55, '#EFF9FE');
+  sky.addColorStop(1, '#F7FBFE');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
 
-    // distant warm Petersburg-style blocks
-    const baseY = 185;
-    for (let i = -1; i < 8; i++) {
-      const x = i * 145 - (sceneryOffset * 0.12);
-      const h = 78 + ((i + 8) % 3) * 25;
-      ctx.fillStyle = i % 2 ? '#EEDFC4' : '#E6D5B5';
-      ctx.fillRect(x, baseY - h, 118, h);
-      ctx.fillStyle = '#C8A76B';
-      for (let r = 0; r < 3; r++) {
-        for (let c = 0; c < 3; c++) {
-          ctx.fillRect(x + 18 + c * 30, baseY - h + 18 + r * 24, 10, 14);
-        }
-      }
-    }
+  const haze = ctx.createLinearGradient(0, 90, 0, 250);
+  haze.addColorStop(0, 'rgba(255,255,255,0)');
+  haze.addColorStop(1, 'rgba(255,255,255,.55)');
+  ctx.fillStyle = haze;
+  ctx.fillRect(0, 80, W, 220);
 
-    // skyline accent
-    ctx.fillStyle = '#CBAF72';
-    ctx.beginPath();
-    ctx.moveTo(W * 0.49, 92);
-    ctx.lineTo(W * 0.5, 44);
-    ctx.lineTo(W * 0.51, 92);
-    ctx.closePath();
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(W * 0.5, 103, 27, Math.PI, 0);
-    ctx.fill();
+  const baseY = 185;
+  for (let i = -1; i < 8; i++) {
+    const x = i * 150 - sceneryOffset * 0.10;
+    const h = 84 + ((i + 5) % 3) * 24;
+    drawFacade(x, baseY, 118, h, i % 2 === 0 ? '#E7D6B7' : '#F0E2C8');
   }
+
+  ctx.fillStyle = '#C9AE73';
+  ctx.beginPath();
+  ctx.moveTo(W * 0.49, 96);
+  ctx.lineTo(W * 0.5, 42);
+  ctx.lineTo(W * 0.51, 96);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(W * 0.5, 108, 24, Math.PI, 0);
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(180,205,220,.35)';
+  ctx.fillRect(0, 185, W, 16);
+}
 
   function drawSidewalks() {
-    ctx.fillStyle = '#EFF5F7';
-    ctx.fillRect(0, 190, W, H - 190);
+  ctx.fillStyle = '#EEF3F5';
+  ctx.fillRect(0, 190, W, H - 190);
 
-    const curbLeft = roadLeftAt(H);
-    const curbRight = roadRightAt(H);
+  const curbLeft = roadLeftAt(H);
+  const curbRight = roadRightAt(H);
 
-    ctx.fillStyle = '#D9E3E6';
-    ctx.fillRect(0, 200, 105, H - 200);
-    ctx.fillRect(W - 105, 200, 105, H - 200);
+  ctx.fillStyle = '#DCE5E8';
+  ctx.fillRect(0, 200, 118, H - 200);
+  ctx.fillRect(W - 118, 200, 118, H - 200);
 
-    // moving paving seams
-    ctx.strokeStyle = 'rgba(92,120,132,.15)';
-    ctx.lineWidth = 3;
-    for (let y = 220 - sceneryOffset; y < H + 220; y += 150) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(Math.max(75, curbLeft - 16), y);
-      ctx.moveTo(Math.min(W - 75, curbRight + 16), y);
-      ctx.lineTo(W, y);
-      ctx.stroke();
+  drawCanalStrip(0, 230, 38, H - 230);
+  drawCanalStrip(W - 38, 230, 38, H - 230);
+
+  drawPaving(42, 210, 62, H - 230);
+  drawPaving(W - 104, 210, 62, H - 230);
+
+  ctx.strokeStyle = 'rgba(92,120,132,.18)';
+  ctx.lineWidth = 3;
+  for (let y = 220 - sceneryOffset; y < H + 220; y += 150) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(Math.max(75, curbLeft - 16), y);
+    ctx.moveTo(Math.min(W - 75, curbRight + 16), y);
+    ctx.lineTo(W, y);
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle = 'rgba(255,255,255,.55)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(curbLeft - 10, 210);
+  ctx.lineTo(curbLeft - 28, H);
+  ctx.moveTo(curbRight + 10, 210);
+  ctx.lineTo(curbRight + 28, H);
+  ctx.stroke();
+}
+
+  
+function drawFacade(x, baseY, width, height, color) {
+  ctx.save();
+
+  ctx.fillStyle = color;
+  ctx.fillRect(x, baseY - height, width, height);
+
+  ctx.fillStyle = 'rgba(0,0,0,.06)';
+  ctx.fillRect(x + width - 10, baseY - height, 10, height);
+
+  ctx.fillStyle = '#D1B27B';
+  ctx.fillRect(x, baseY - height, width, 8);
+
+  const rows = 3;
+  const cols = 3;
+  const winW = 11;
+  const winH = 15;
+  const gapX = 28;
+  const gapY = 24;
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const wx = x + 18 + c * gapX;
+      const wy = baseY - height + 18 + r * gapY;
+
+      ctx.fillStyle = '#B38A4F';
+      ctx.fillRect(wx - 1, wy - 1, winW + 2, winH + 2);
+      ctx.fillStyle = '#F6E6B8';
+      ctx.fillRect(wx, wy, winW, winH);
     }
   }
 
-  function roadLeftAt(y) {
+  ctx.fillStyle = '#9A7A4B';
+  ctx.fillRect(x + width * 0.42, baseY - 22, 16, 22);
+
+  ctx.restore();
+}
+
+function drawCanalStrip(x, y, w, h) {
+  const water = ctx.createLinearGradient(x, y, x + w, y);
+  water.addColorStop(0, '#D7EEF7');
+  water.addColorStop(0.5, '#BCE2F2');
+  water.addColorStop(1, '#DFF4FA');
+  ctx.fillStyle = water;
+  ctx.fillRect(x, y, w, h);
+
+  ctx.strokeStyle = 'rgba(255,255,255,.25)';
+  ctx.lineWidth = 2;
+  for (let yy = y + 20; yy < y + h; yy += 70) {
+    ctx.beginPath();
+    ctx.moveTo(x + 6, yy);
+    ctx.lineTo(x + w - 6, yy);
+    ctx.stroke();
+  }
+}
+
+function drawPaving(x, y, w, h) {
+  ctx.fillStyle = 'rgba(255,255,255,.18)';
+  for (let yy = y; yy < y + h; yy += 52) {
+    for (let xx = x; xx < x + w; xx += 26) {
+      ctx.fillRect(xx, yy, 24, 24);
+    }
+  }
+}
+
+function drawRoadTexture() {
+  ctx.globalAlpha = 0.12;
+  for (let i = 0; i < 140; i++) {
+    const y = 210 + ((i * 63 + roadOffset * 0.8) % (H - 200));
+    const left = roadLeftAt(y);
+    const right = roadRightAt(y);
+    const x = left + 16 + ((i * 113) % Math.max(20, right - left - 32));
+    ctx.fillStyle = i % 2 ? '#FFFFFF' : '#111A22';
+    ctx.fillRect(x, y, 2, 5);
+  }
+  ctx.globalAlpha = 1;
+
+  const sheen = ctx.createLinearGradient(W * 0.5, 210, W * 0.5, H);
+  sheen.addColorStop(0, 'rgba(255,255,255,.08)');
+  sheen.addColorStop(0.5, 'rgba(255,255,255,.02)');
+  sheen.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = sheen;
+  ctx.beginPath();
+  ctx.moveTo(W * 0.32, 210);
+  ctx.lineTo(W * 0.68, 210);
+  ctx.lineTo(W * 0.58, H);
+  ctx.lineTo(W * 0.42, H);
+  ctx.closePath();
+  ctx.fill();
+}
+
+
+function roadLeftAt(y) {
     const top = W * 0.17;
     const bottom = W * 0.035;
     const t = Math.max(0, Math.min(1, (y - 205) / (H - 205)));
@@ -317,129 +425,148 @@
   }
 
   function drawRoad() {
-    ctx.save();
+  ctx.save();
 
-    const roadGradient = ctx.createLinearGradient(0, 210, 0, H);
-    roadGradient.addColorStop(0, '#46515C');
-    roadGradient.addColorStop(1, COLORS.road);
+  const roadGradient = ctx.createLinearGradient(0, 210, 0, H);
+  roadGradient.addColorStop(0, '#4B5662');
+  roadGradient.addColorStop(0.55, '#39424C');
+  roadGradient.addColorStop(1, '#2D343D');
 
-    ctx.fillStyle = roadGradient;
+  ctx.fillStyle = roadGradient;
+  ctx.beginPath();
+  ctx.moveTo(W * 0.17, 205);
+  ctx.lineTo(W * 0.83, 205);
+  ctx.lineTo(W * 0.965, H);
+  ctx.lineTo(W * 0.035, H);
+  ctx.closePath();
+  ctx.fill();
+
+  drawRoadTexture();
+
+  ctx.strokeStyle = '#F6F8FA';
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(W * 0.17, 205);
+  ctx.lineTo(W * 0.035, H);
+  ctx.moveTo(W * 0.83, 205);
+  ctx.lineTo(W * 0.965, H);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#F8F1D0';
+  ctx.lineWidth = 10;
+  ctx.lineCap = 'round';
+  ctx.setLineDash([78, 92]);
+  ctx.lineDashOffset = roadOffset;
+
+  for (const x of [W * 0.40, W * 0.60]) {
     ctx.beginPath();
-    ctx.moveTo(W * 0.17, 205);
-    ctx.lineTo(W * 0.83, 205);
-    ctx.lineTo(W * 0.965, H);
-    ctx.lineTo(W * 0.035, H);
+    ctx.moveTo(x, 210);
+    ctx.lineTo(x, H);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  if (running) {
+    const glow = ctx.createLinearGradient(car.x, car.y + 10, car.x, H);
+    glow.addColorStop(0, 'rgba(121,198,43,.22)');
+    glow.addColorStop(1, 'rgba(121,198,43,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.moveTo(car.x - 52, car.y + 75);
+    ctx.lineTo(car.x + 52, car.y + 75);
+    ctx.lineTo(car.x + 98, H);
+    ctx.lineTo(car.x - 98, H);
     ctx.closePath();
     ctx.fill();
-
-    // subtle road texture
-    ctx.globalAlpha = 0.10;
-    for (let i = 0; i < 100; i++) {
-      const y = 210 + ((i * 83 + roadOffset * 0.7) % (H - 200));
-      const x = roadLeftAt(y) + 20 + ((i * 127) % Math.max(40, roadRightAt(y) - roadLeftAt(y) - 40));
-      ctx.fillStyle = i % 2 ? '#FFFFFF' : '#0C1520';
-      ctx.fillRect(x, y, 2, 7);
-    }
-    ctx.globalAlpha = 1;
-
-    // curbs
-    ctx.strokeStyle = '#FFFFFF';
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(W * 0.17, 205);
-    ctx.lineTo(W * 0.035, H);
-    ctx.moveTo(W * 0.83, 205);
-    ctx.lineTo(W * 0.965, H);
-    ctx.stroke();
-
-    // lane dividers
-    ctx.strokeStyle = COLORS.cream;
-    ctx.lineWidth = 10;
-    ctx.lineCap = 'round';
-    ctx.setLineDash([78, 92]);
-    ctx.lineDashOffset = roadOffset;
-    for (const x of [W * 0.40, W * 0.60]) {
-      ctx.beginPath();
-      ctx.moveTo(x, 210);
-      ctx.lineTo(x, H);
-      ctx.stroke();
-    }
-    ctx.setLineDash([]);
-
-    // green speed glow behind the taxi
-    if (running) {
-      const glow = ctx.createLinearGradient(car.x, car.y + 10, car.x, H);
-      glow.addColorStop(0, 'rgba(121,198,43,.22)');
-      glow.addColorStop(1, 'rgba(121,198,43,0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.moveTo(car.x - 48, car.y + 70);
-      ctx.lineTo(car.x + 48, car.y + 70);
-      ctx.lineTo(car.x + 95, H);
-      ctx.lineTo(car.x - 95, H);
-      ctx.closePath();
-      ctx.fill();
-    }
-
-    ctx.restore();
   }
+
+  ctx.restore();
+}
 
   function drawStreetDetails() {
-    for (let i = 0; i < 8; i++) {
-      const y = 250 + ((i * 225 + sceneryOffset) % (H - 190));
-      const scale = 0.55 + y / H * 0.62;
+  for (let i = 0; i < 8; i++) {
+    const y = 250 + ((i * 210 + sceneryOffset) % (H - 170));
+    const scale = 0.52 + (y / H) * 0.72;
 
-      drawTree(52, y, scale);
-      drawTree(W - 52, y + 85, scale * 0.95);
+    drawTree(58, y, scale);
+    drawTree(W - 58, y + 85, scale * 0.96);
 
-      if (i % 2 === 0) {
-        drawLamp(105, y + 30, scale);
-        drawLamp(W - 105, y + 115, scale);
-      }
+    drawLamp(108, y + 24, scale * 0.92);
+    drawLamp(W - 108, y + 108, scale * 0.92);
+
+    if (i % 2 === 0) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(53,78,95,.55)';
+      ctx.lineWidth = 4 * scale;
+      ctx.beginPath();
+      ctx.moveTo(26, y + 38);
+      ctx.lineTo(26, y + 86);
+      ctx.moveTo(W - 26, y + 68);
+      ctx.lineTo(W - 26, y + 116);
+      ctx.stroke();
+      ctx.restore();
     }
   }
+}
 
   function drawTree(x, y, scale) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(scale, scale);
-    ctx.fillStyle = '#765F43';
-    roundRect(ctx, -7, 18, 14, 50, 6);
-    ctx.fill();
-    const leaf = ctx.createRadialGradient(-12, -14, 8, 0, 0, 46);
-    leaf.addColorStop(0, '#A2DF72');
-    leaf.addColorStop(1, '#58B83E');
-    ctx.fillStyle = leaf;
-    ctx.beginPath();
-    ctx.arc(0, 0, 43, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(-26, 8, 28, 0, Math.PI * 2);
-    ctx.arc(27, 9, 27, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+
+  ctx.fillStyle = '#7A5B3D';
+  roundRect(ctx, -7, 20, 14, 50, 6);
+  ctx.fill();
+
+  const leaf = ctx.createRadialGradient(-10, -8, 10, 0, 0, 46);
+  leaf.addColorStop(0, '#B6ED7D');
+  leaf.addColorStop(0.6, '#7FD255');
+  leaf.addColorStop(1, '#4FA93D');
+  ctx.fillStyle = leaf;
+
+  ctx.beginPath();
+  ctx.arc(0, 0, 36, 0, Math.PI * 2);
+  ctx.arc(-24, 6, 24, 0, Math.PI * 2);
+  ctx.arc(24, 8, 22, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(255,255,255,.18)';
+  ctx.beginPath();
+  ctx.arc(-10, -12, 14, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
 
   function drawLamp(x, y, scale) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(scale, scale);
-    ctx.strokeStyle = '#283847';
-    ctx.lineWidth = 6;
-    ctx.beginPath();
-    ctx.moveTo(0, 48);
-    ctx.lineTo(0, -36);
-    ctx.stroke();
-    ctx.fillStyle = '#283847';
-    ctx.beginPath();
-    ctx.arc(0, -42, 13, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#FFE5A6';
-    ctx.beginPath();
-    ctx.arc(0, -42, 7, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+
+  ctx.strokeStyle = '#2B3D4D';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(0, 48);
+  ctx.lineTo(0, -30);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(0, -28);
+  ctx.quadraticCurveTo(10, -40, 22, -38);
+  ctx.stroke();
+
+  ctx.fillStyle = '#2B3D4D';
+  ctx.beginPath();
+  ctx.arc(24, -38, 8, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#FFE4A0';
+  ctx.beginPath();
+  ctx.arc(24, -38, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
 
   function drawObjects() {
     for (const o of objects) {
