@@ -31,7 +31,7 @@
   let particles = [];
 
   const taxi = new Image();
-  taxi.src = 'assets/taxi-top-render.webp';
+  taxi.src = 'assets/taxi-top-render.webp?v=20261017-rules2';
 
   const car = { x: 0, y: 0, w: 0, h: 0, invincible: 0 };
 
