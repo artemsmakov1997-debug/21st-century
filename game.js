@@ -18,7 +18,7 @@
   let score = 0;
   let tokens = 0;
   let lives = 3;
-  let speed = 560;
+  let speed = 510;
   let spawnTimer = 0;
   let targetLane = 1;
   let tilt = 0;
@@ -111,7 +111,7 @@
     score = 0;
     tokens = 0;
     lives = 3;
-    speed = 560;
+    speed = 510;
     spawnTimer = 0;
     targetLane = 1;
     tilt = 0;
@@ -129,27 +129,22 @@
 
   function updateHud() {
     scoreEl.textContent = Math.floor(score).toLocaleString('ru-RU');
-    livesEl.textContent = '❤'.repeat(Math.max(0, lives));
+    livesEl.textContent = '10 XXI';
     tokensEl.textContent = tokens;
     missionEl.textContent = `${Math.min(tokens, 10)}/10`;
   }
 
   function spawn() {
-    const roll = Math.random();
-    let type = 'token';
-    if (roll < 0.48) type = 'token';
-    else if (roll < 0.59) type = 'heart';
-    else if (roll < 0.68) type = 'shield';
-    else if (roll < 0.77) type = 'boost';
-    else if (roll < 0.90) type = 'cone';
-    else type = 'puddle';
+    // На дороге остаются только жетоны XXI и конусы.
+    // Жетоны встречаются чаще, чтобы цель в 10 жетонов была достижима без затяжной сессии.
+    const type = Math.random() < 0.68 ? 'token' : 'cone';
 
     objects.push({
       type,
       lane: Math.floor(Math.random() * 3),
       Zw: camZ + 1 / sc(H * 0.10),   // мировая позиция: объект стоит на дороге неподвижно
       y: H * 0.10,
-      size: W * (type === 'cone' ? 0.09 : type === 'puddle' ? 0.11 : 0.085),
+      size: W * (type === 'cone' ? 0.09 : 0.085),
       bob: Math.random() * Math.PI * 2,
       hit: false
     });
@@ -171,48 +166,25 @@
   }
 
   function collect(o, x) {
-    switch (o.type) {
-      case 'token':
-        tokens += 1;
-        score += 160;
-        burst(x, o.y, '#8ED83C', 16);
-        beep(760, 0.06);
-        break;
-      case 'heart':
-        lives = Math.min(5, lives + 1);
-        score += 90;
-        burst(x, o.y, '#FF5972', 12);
-        beep(620, 0.08);
-        break;
-      case 'shield':
-        car.invincible = 5;
-        score += 120;
-        burst(x, o.y, '#69D7FF', 16);
-        beep(900, 0.08);
-        break;
-      case 'boost':
-        speed += 70;
-        score += 240;
-        burst(x, o.y, '#5AAEFF', 16);
-        beep(980, 0.08);
-        break;
-      case 'cone':
-      case 'puddle':
-        if (car.invincible <= 0) {
-          lives -= 1;
-          burst(car.x, car.y - 12, '#FFA74D', 18);
-          beep(180, 0.15);
-          if (lives <= 0) endGame();
-        } else {
-          score += 40;
-          burst(x, o.y, '#ACEEFF', 10);
-        }
-        break;
+    if (o.type === 'token') {
+      tokens += 1;
+      score += 160;
+      burst(x, o.y, '#8ED83C', 16);
+      beep(760, 0.06);
+
+      if (tokens >= 10) {
+        score += 1000;
+        burst(car.x, car.y - 90, '#F6D15C', 30);
+        beep(1040, 0.12);
+        winGame();
+      }
+      return;
     }
 
-    if (tokens === 10) {
-      score += 1000;
-      burst(car.x, car.y - 90, '#F6D15C', 30);
+    if (o.type === 'cone') {
+      burst(car.x, car.y - 12, '#FFA74D', 20);
+      beep(180, 0.15);
+      loseGame();
     }
   }
 
@@ -220,7 +192,7 @@
     time += dt;
     camZ += speed * 1.35 / H * dt;   // вся сцена и препятствия едут с одной скоростью
     score += dt * 12;
-    speed = Math.min(850, 560 + score * 0.11);
+    speed = Math.min(760, 510 + score * 0.08);
     spawnTimer -= dt;
 
     if (spawnTimer <= 0) {
@@ -1215,11 +1187,7 @@
       const x = laneX(o.lane, o.y);
       ctx.globalAlpha = clamp((o.y - H * 0.10) / (H * 0.07), 0, 1);
       if (o.type === 'token') drawToken(o, x);
-      else if (o.type === 'heart') drawHeart(o, x);
-      else if (o.type === 'shield') drawShield(o, x);
-      else if (o.type === 'boost') drawBoost(o, x);
       else if (o.type === 'cone') drawCone(o, x);
-      else if (o.type === 'puddle') drawPuddle(o, x);
     }
     ctx.globalAlpha = 1;
   }
@@ -1268,11 +1236,19 @@
     requestAnimationFrame(loop);
   }
 
-  function endGame() {
+  function loseGame() {
     running = false;
     overlay.classList.add('show');
-    overlay.querySelector('h1').textContent = 'Маршрут завершён';
-    overlay.querySelector('p').textContent = `Результат: ${Math.floor(score).toLocaleString('ru-RU')} очков. Жетонов XXI: ${tokens}.`;
+    overlay.querySelector('h1').textContent = 'Столкновение';
+    overlay.querySelector('p').textContent = `Вы задели конус. Собрано жетонов XXI: ${tokens} из 10.`;
+    startBtn.textContent = 'Попробовать снова';
+  }
+
+  function winGame() {
+    running = false;
+    overlay.classList.add('show');
+    overlay.querySelector('h1').textContent = 'Маршрут пройден!';
+    overlay.querySelector('p').textContent = 'Вы собрали 10 жетонов XXI и успешно завершили маршрут.';
     startBtn.textContent = 'Играть снова';
   }
 
