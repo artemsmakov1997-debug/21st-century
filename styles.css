@@ -2,20 +2,48 @@
   --blue:#0A71B9;
   --blue-dark:#0A3F72;
   --green:#79C62B;
-  --green-dark:#5DAE16;
-  --ice:#EAF7FD;
-  --ink:#12324A;
-  --white:#fff;
+  --green-dark:#5CA91E;
+  --line:#DCE8F2;
+  --text:#173B5B;
+  --muted:#6F89A0;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#eefaff,#f8fbfd);color:var(--ink)}
-body{display:flex;justify-content:center;align-items:flex-start}
-.app-shell{width:min(100%,540px);padding:0 10px 22px}
-.game-card{background:#fff;border-radius:0 0 26px 26px;overflow:hidden;box-shadow:0 18px 40px rgba(12,76,120,.12)}
-.topbar{height:74px;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #e8f2f7}
-.brand{display:flex;align-items:center;gap:10px}.brand-logo{width:58px;height:58px;object-fit:contain}.brand-title{font-size:20px;font-weight:800;color:var(--blue-dark)}.brand-subtitle{font-size:12px;color:#5c768a}.icon-btn{border:1px solid #d6e9f3;background:#fff;width:40px;height:40px;border-radius:50%;font-size:18px}
-.hud{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px 12px;background:#f9fcfe}.hud-pill{background:#fff;border:1px solid #e2edf3;border-radius:14px;padding:8px 10px;display:flex;flex-direction:column}.hud-pill span{font-size:11px;color:#6d8799}.hud-pill strong{font-size:16px;color:var(--blue-dark)}
-.canvas-wrap{position:relative;background:#dff5ff;aspect-ratio:3/5;overflow:hidden}canvas{width:100%;height:100%;display:block;touch-action:none}
-.overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:linear-gradient(180deg,rgba(239,251,255,.75),rgba(14,76,115,.36));backdrop-filter:blur(3px)}.overlay.show{display:flex}.overlay-card{width:min(92%,360px);background:rgba(255,255,255,.95);border-radius:24px;padding:24px;text-align:center;box-shadow:0 16px 40px rgba(4,54,87,.2)}.overlay-logo{width:96px;height:96px;object-fit:contain}.overlay h1{margin:4px 0 6px;color:var(--blue-dark);font-size:34px}.overlay p{margin:0 0 18px;line-height:1.4;color:#537087}.primary-btn{border:0;border-radius:999px;background:linear-gradient(180deg,#8bd338,#62b719);color:#fff;font-weight:800;font-size:18px;padding:14px 34px;box-shadow:0 9px 18px rgba(100,180,30,.24)}.controls-note{font-size:12px;color:#7891a3;margin-top:12px}
-.mission{display:flex;align-items:center;justify-content:space-between;padding:14px 16px}.mission-label{font-size:11px;color:#77a0b7;text-transform:uppercase;letter-spacing:.08em}.mission-title{font-weight:700;color:var(--blue-dark);margin-top:2px}.mission-progress{background:#e9f7dc;color:#4f9b14;font-weight:800;padding:8px 12px;border-radius:999px}
-@media (max-width:390px){.brand-title{font-size:18px}.brand-logo{width:50px;height:50px}.topbar{height:66px}.hud-pill{padding:7px}.hud-pill strong{font-size:14px}}
+html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#e8f4fb 0%,#f9fcff 100%);color:var(--text)}
+body{display:flex;justify-content:center;padding:14px}
+.app-shell{width:min(100%,460px)}
+.game-card{background:rgba(255,255,255,.90);border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(14,69,114,.14);border:1px solid rgba(255,255,255,.7)}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 16px 12px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{width:54px;height:54px;object-fit:contain;border-radius:50%;background:#fff}
+.brand-title{font-size:20px;font-weight:800;color:var(--blue-dark)}
+.brand-subtitle{color:var(--muted);font-size:13px;margin-top:2px}
+.icon-btn{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.94);cursor:pointer;font-size:20px;box-shadow:0 8px 18px rgba(14,69,114,.08)}
+.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 14px}
+.hud-pill{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:16px;padding:11px 12px;min-height:66px;display:flex;flex-direction:column;justify-content:center}
+.hud-pill span{font-size:12px;color:var(--muted)}
+.hud-pill strong{font-size:18px;line-height:1.25;color:var(--blue-dark)}
+.stage{position:relative;width:100%;aspect-ratio:9/16;background-image:linear-gradient(to bottom,rgba(255,255,255,.06),rgba(255,255,255,0) 28%,rgba(0,0,0,.06) 100%),url('assets/bg-scene.webp');background-size:cover;background-position:center;overflow:hidden}
+.stage::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(255,202,114,.06),transparent 45%);pointer-events:none;z-index:1}
+#gameCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2;touch-action:none}
+.overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:22px;z-index:3;background:linear-gradient(180deg,rgba(8,38,59,.24),rgba(8,38,59,.48));backdrop-filter:blur(3px)}
+.overlay.show{display:flex}
+.overlay-card{width:min(92%,360px);padding:24px;border-radius:24px;background:rgba(255,255,255,.94);text-align:center;box-shadow:0 20px 50px rgba(5,35,56,.22)}
+.overlay-logo{width:92px;height:92px;object-fit:contain}
+.overlay h1{margin:6px 0 8px;color:var(--blue-dark);font-size:30px}
+.overlay p{margin:0 0 18px;color:#587590;line-height:1.45}
+.primary-btn{border:0;border-radius:999px;background:linear-gradient(180deg,#8DD93D,#6CBC21);color:#fff;padding:14px 28px;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 14px 28px rgba(103,184,30,.3)}
+.controls-note{margin-top:12px;color:var(--muted);font-size:12px}
+.mission{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 16px 18px}
+.mission-label{font-size:11px;color:#7EA0B8;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.mission-title{margin-top:3px;font-size:16px;font-weight:800;color:var(--blue-dark)}
+.mission-progress{background:#E8F5D8;color:var(--green-dark);font-weight:800;border-radius:999px;padding:10px 14px;min-width:72px;text-align:center}
+@media(max-width:390px){
+  body{padding:8px}
+  .brand-title{font-size:18px}
+  .hud{gap:8px;padding:0 12px 12px}
+  .hud-pill{min-height:60px;padding:9px 10px}
+  .hud-pill strong{font-size:16px}
+  .topbar{padding:12px 12px 10px}
+  .mission{padding:12px}
+  .mission-title{font-size:14px}
+}
